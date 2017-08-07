@@ -1,0 +1,61 @@
+#include<stdio.h>
+#include<iostream>
+
+using namespace std;
+
+int N = 10;
+int tabGlowna[10] = {1,2,3,4,6,5,7,9,8,0};
+int tabPomocnicza[10];
+ 
+/* Scalanie dwoch posortowanych ciagow
+tab[pocz...sr] i tab[sr+1...kon] i
+wynik zapisuje w tab[pocz...kon] */
+void merge(int poczatek, int srodek, int koniec)
+{
+	int i,j,q;
+	for (i=poczatek; i<=koniec; i++) tabPomocnicza[i]=tabGlowna[i];  // Skopiowanie danych do tablicy pomocniczej
+	i=poczatek; j=srodek + 1; q=poczatek;                 // Ustawienie wskaźników tablic
+	while (i<=srodek && j<=koniec) {   // Przenoszenie danych z sortowaniem ze zbiorów pomocniczych do tablicy głównej
+		if (tabGlowna[i]<tabGlowna[j])
+			tabPomocnicza[q++]=tabGlowna[i++];
+		else
+			tabPomocnicza[q++]=tabGlowna[j++];
+	}
+	while (i<=srodek) 
+		tabPomocnicza[q++]=tabGlowna[i++]; // Przeniesienie nie skopiowanych danych ze zbioru pierwszego w przypadku, gdy drugi zbiór się skończył
+	
+	while (j<=koniec) 
+		tabPomocnicza[q++]=tabGlowna[j++];
+	
+	for(i= poczatek; i<q ; i++){
+		tabGlowna[i] = tabPomocnicza[j];
+	}
+  
+}
+ 
+/* Procedura sortowania tab[pocz...kon] */
+void mergesort(int poczatek, int koniec)
+{
+	int srodek;
+	if(poczatek < koniec){
+		srodek=(poczatek+koniec)/2;
+		mergesort(poczatek, srodek);    // Dzielenie lewej części
+		mergesort(srodek+1, koniec);   // Dzielenie prawej części
+		merge(poczatek, srodek, koniec);   // Łączenie części lewej i prawej
+	}
+}
+ 
+int main() {
+	int i;
+ 
+	cout << "Zbior przed sortowaniem:\n";
+	for (i=0; i<N; i++)
+		cout << tabGlowna[i];
+ 
+	mergesort(0,N-1);
+ 
+	cout <<"\nZbior po sortowaniu:\n";
+	for (i=0; i<N; i++)
+		cout << tabPomocnicza[i];
+	cout<< endl;
+}
